@@ -6,14 +6,14 @@ function ShiftOnHover({ children }: { children: ReactNode }) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [transform, setTransform] = useState({ transform: "translate(0, 0)" });
 
-	const handleMouseMove = (e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>) => {
-		const container = containerRef.current as HTMLDivElement;
+	const handleMouseMove = (e) => {
+		const container = containerRef.current;
 		const containerRect = container.getBoundingClientRect();
 
-		const mouseX = e.clientX - containerRect.left - containerRect.width / 2;
-		const mouseY = e.clientY - containerRect.top - containerRect.height / 2;
+		const mouseX = -e.clientX - containerRect.left - containerRect.width / 2;
+		const mouseY = -e.clientY - containerRect.top - containerRect.height / 2;
 
-		const newTransform = `translate(${mouseX / 2}px, ${mouseY / 2}px)`;
+		const newTransform = `translate(${mouseX / 3}px, ${mouseY / 3}px)`;
 		setTransform({ transform: newTransform });
 	};
 
