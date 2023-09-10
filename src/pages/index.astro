@@ -1,0 +1,12 @@
+---
+import Gallery1 from '../components/Gallery1';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<Gallery1 
+			client:load
+		/>
+	</main>
+</Layout>
