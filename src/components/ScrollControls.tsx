@@ -3,6 +3,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { context as fiberContext, useFrame, useThree } from "@react-three/fiber";
 import { mergeRefs } from "react-merge-refs";
+import { createRoot } from "react-dom/client";
 
 export type ScrollControlsProps = {
 	eps?: number;
@@ -203,7 +204,7 @@ const ScrollHtml = React.forwardRef(
 				}px,${state.horizontal ? 0 : height * (state.pages - 1) * -state.offset}px,0)`;
 			}
 		});
-		ReactDOM.render(
+		createRoot(state.fixed).render(
 			<div
 				ref={mergeRefs([ref, group])}
 				style={{ ...style, position: "absolute", top: 0, left: 0, willChange: "transform" }}
@@ -211,8 +212,7 @@ const ScrollHtml = React.forwardRef(
 				<context.Provider value={state}>
 					<fiberContext.Provider value={fiberState}>{children}</fiberContext.Provider>
 				</context.Provider>
-			</div>,
-			state.fixed
+			</div>
 		);
 		return null;
 	}

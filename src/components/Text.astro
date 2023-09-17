@@ -1,0 +1,178 @@
+---
+const { paragraphs } = Astro.props;
+---
+
+<div class="content">
+	{
+		paragraphs.map((p, i) => (
+			<div class=" text-6xl content__text" data-splitting>
+				{p}
+			</div>
+		))
+	}
+	<button class="trigger unbutton text-2xl">Learn more</button>
+</div>
+
+<style is:inline>
+	.content {
+		grid-area: content;
+		display: grid;
+		align-content: start;
+		grid-template-areas: "content";
+	}
+
+	.content__text {
+		hyphens: auto;
+		display: flex;
+		flex-wrap: wrap;
+		align-content: start;
+	}
+
+	.content__text {
+		grid-area: content;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.content__text--current {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.word-wrap {
+		display: inline-block;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.word > .char:last-child {
+		margin-right: 12px;
+	}
+
+	@media screen and (min-width: 53em) {
+		main {
+			grid-template-areas: "content frame";
+			grid-template-columns: 1fr 300px;
+			padding: 10vh 3rem;
+			grid-gap: 2rem;
+		}
+		.frame {
+			border-left: 1px solid var(--color-line);
+			min-height: 70vh;
+			padding: 1.5rem 2.5rem;
+			grid-template-areas: "title" "sponsor" "back" "prev" "trigger" "demos";
+		}
+		.content {
+			padding: 5vh 2rem 0;
+		}
+	}
+</style>
+
+<script is:inline>
+const splittingOutput = Splitting();
+
+// .content__text elements
+const texts = [...document.querySelectorAll(".content__text")];
+
+// Let's define the position of the current text
+let currentTextPos = 0;
+
+// Check if there's an animation in progress
+let isAnimating = false;
+
+// Add class current to the "current" one
+texts[currentTextPos].classList.add("content__text--current");
+
+// Set perspective
+texts.forEach((text) => {
+	gsap.set(text, { perspective: 1000 });
+});
+
+// switch between texts
+const switchTexts = () => {
+	if (isAnimating) return false;
+	isAnimating = true;
+
+	const upcomingTextPos = currentTextPos ? 0 : 1;
+
+	// All current text words
+	const currentWords = splittingOutput[currentTextPos].words;
+
+	// All upcoming text words
+	const upcomingtWords = splittingOutput[upcomingTextPos].words;
+
+	gsap
+		.timeline({
+			defaults: {
+				duration: 0.05,
+				ease: "expo",
+			},
+			onComplete: () => {
+				// Update currentTextPos
+				currentTextPos = upcomingTextPos;
+				isAnimating = false;
+			},
+		})
+		.fromTo(
+			currentWords,
+			{
+				willChange: "transform, opacity",
+				opacity: 1,
+				rotationX: 0,
+				rotationY: 0,
+				xPercent: 0,
+				yPercent: 0,
+				z: 0,
+			},
+			{
+				duration: 0.5,
+				ease: "power1.in",
+				z: () => gsap.utils.random(-700, -400),
+				opacity: 0,
+				xPercent: () => gsap.utils.random(-50, 50),
+				yPercent: () => gsap.utils.random(-10, 10),
+				rotationX: () => gsap.utils.random(-90, 90),
+				stagger: {
+					each: 0.006,
+					from: "random",
+				},
+				onComplete: () => {
+					texts[currentTextPos].classList.remove("content__text--current");
+				},
+			},
+			0
+		)
+
+		.fromTo(
+			upcomingtWords,
+			{
+				willChange: "transform, opacity",
+				z: () => gsap.utils.random(400, 700),
+				opacity: 0,
+				xPercent: () => gsap.utils.random(-50, 50),
+				yPercent: () => gsap.utils.random(-10, 10),
+				rotationX: () => gsap.utils.random(-90, 90),
+			},
+			{
+				onStart: () => {
+					texts[upcomingTextPos].classList.add("content__text--current");
+				},
+				duration: 0.8,
+				ease: "expo",
+				opacity: 1,
+				rotationX: 0,
+				rotationY: 0,
+				xPercent: 0,
+				yPercent: 0,
+				z: 0,
+				stagger: {
+					each: 0.006,
+					from: "random",
+				},
+			},
+			">-=0.45"
+		);
+};
+
+document.querySelector(".trigger").addEventListener("click", switchTexts);
+</script>
