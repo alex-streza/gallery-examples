@@ -335,4 +335,4 @@ export const galleryItems: GalleryType[] = [
 		imageUrl:
 			"https://midfiles.fra1.digitaloceanspaces.com/ryanhday_Congratulations_on_winning_the_award_Your_painting_is__d8cfc9f7-5374-40bc-8377-8b4850ff9c75.png",
 	},
-];
+].slice(0, 15);

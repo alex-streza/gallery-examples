@@ -116,7 +116,7 @@ export const Gallery2 = () => {
 			{!loading && (
 				<Canvas gl={{ antialias: false }} dpr={[1, 1.5]}>
 					<Suspense fallback={null}>
-						<ScrollControls infinite horizontal damping={4} pages={20} distance={1}>
+						<ScrollControls infinite horizontal damping={4} pages={galleryItems.length / 3} distance={1}>
 							<Scroll>
 								<Pages />
 							</Scroll>
