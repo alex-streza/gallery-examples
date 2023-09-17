@@ -1,11 +1,11 @@
+import { animated, useSpring } from "@react-spring/three";
 import { Image as ImageImpl, Preload } from "@react-three/drei";
 import { Canvas, useFrame, useThree, type GroupProps } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { Scroll, ScrollControls, useScroll } from "./ScrollControls";
-import { useSpring, animated } from "@react-spring/three";
 import { galleryItems } from "../lib/constants";
 import { aggregateResult, preloadImages } from "../lib/utils";
+import { Scroll, ScrollControls, useScroll } from "./ScrollControls";
 
 interface ImageProps extends GroupProps {
 	url: string;
@@ -69,7 +69,7 @@ function Pages() {
 	const { width } = useThree((state) => state.viewport);
 
 	const pages = useMemo(() => {
-		const images = galleryItems.slice(0, 9).map((item) => item.imageUrl);
+		const images = galleryItems.map((item) => item.imageUrl);
 		// const images = [...Array(3 * 5).keys()].map((i) => `https://source.unsplash.com/random/800x600?sig=${i}`);
 		const pages = images.reduce(
 			(acc, _, i) => {
@@ -100,13 +100,11 @@ function Pages() {
 	);
 }
 
-const headingClassName = "text-[120px] font-semibold absolute text-zinc-600";
-
 export const Gallery2 = () => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		preloadImages(galleryItems.slice(0, 9).map((item) => item.imageUrl)).then((result) => {
+		preloadImages(galleryItems.map((item) => item.imageUrl)).then((result) => {
 			console.log(aggregateResult(result));
 			setLoading(false);
 		});
@@ -118,18 +116,11 @@ export const Gallery2 = () => {
 			{!loading && (
 				<Canvas gl={{ antialias: false }} dpr={[1, 1.5]}>
 					<Suspense fallback={null}>
-						<ScrollControls infinite horizontal damping={4} pages={4} distance={1}>
+						<ScrollControls infinite horizontal damping={4} pages={20} distance={1}>
 							<Scroll>
 								<Pages />
 							</Scroll>
-							<Scroll html>
-								<h1 className={`${headingClassName} top-[20vh] left-[(-75vw)]`}>creativity</h1>
-								<h1 className={`${headingClassName} top-[20vh] left-[25vw]`}>beyond</h1>
-								<h1 className={`${headingClassName} top-[20vh] left-[125vw]`}>imagination</h1>
-								<h1 className={`${headingClassName} top-[20vh] left-[225vw]`}>creativity</h1>
-								<h1 className={`${headingClassName} top-[20vh] left-[325vw]`}>beyond</h1>
-								<h1 className={`${headingClassName} top-[20vh] left-[425vw]`}>imagination</h1>
-							</Scroll>
+							{/* <Scroll html></Scroll> */}
 						</ScrollControls>
 						<Preload />
 					</Suspense>
